@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Text.RegularExpressions;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using System.Diagnostics;
 
 namespace auTouch
 {
@@ -17,6 +18,8 @@ namespace auTouch
     {
         readonly MouseSimulator ms = new();
         readonly List<Dot> dots = new();
+
+        private BackgroundWorker bw;
         private int index = 0;  // 用來命名: dot_{index}
         private Dot target; // 選定的 Dot
 
@@ -45,13 +48,63 @@ namespace auTouch
 
         private void Btn_Run_Click(object sender, RoutedEventArgs e)
         {
+            bw = new();
+            bw.WorkerReportsProgress = true;
+            bw.WorkerSupportsCancellation = true;
+
             if (RB_Current.IsChecked == true)
             {
+                int count = 0, interval = 0;
+                if (!int.TryParse(TB_Count.Text, out count) || !int.TryParse(TB_Interval.Text, out interval))
+                    return;
 
+                Btn_Stop.IsEnabled = true;
+                Btn_Run.IsEnabled = false;
+
+                bw.DoWork += ((sender, e) =>
+                {
+                    if (count < 0)
+                    {
+                        while (true)
+                        {
+                            ms.MouseLeftClickEvent();
+                            Thread.Sleep(interval);
+                            if (bw.CancellationPending == true)
+                            {
+                                e.Cancel = true;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < count; i++)
+                        {
+                            ms.MouseLeftClickEvent();
+                            Thread.Sleep(interval);
+                            if (bw.CancellationPending == true)
+                            {
+                                e.Cancel = true;
+                                break;
+                            }
+                        }
+                    }
+                });
+                bw.RunWorkerAsync();
             }
-            //if (target == null) return;
-            //var p = Get_Dot_Point(target);
-            //ms.SetCursorPosition(p);
+            else
+            {
+            }
+        }
+
+        private void Btn_Stop_Click(object sender, RoutedEventArgs e)
+        {
+            Btn_Stop.IsEnabled = false;
+            Btn_Run.IsEnabled = true;
+            if (bw != null && bw.WorkerSupportsCancellation == true)
+            {
+                bw.CancelAsync();
+            }
         }
 
         private void Check_Number(object sender, TextCompositionEventArgs e)
@@ -132,7 +185,7 @@ namespace auTouch
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {      
+        {
             // 移除字串中的空白
             TextBox textBox = sender as TextBox;
             if (textBox.Text != textBox.Text.Replace(" ", ""))
