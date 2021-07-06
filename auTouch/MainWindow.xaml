@@ -20,8 +20,13 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0">
-            <Button x:Name="Btn_Create" Width="80" Height="50" Click="Btn_Create_Click" Content="Create" FontSize="20"/>
-            <Button x:Name="Btn_Run" Width="80" Height="50" Click="Btn_Run_Click" Content="Run" FontSize="20"/>
+            <Button x:Name="Btn_Create" Width="80" Height="50" Click="Btn_Create_Click" Content="Create" FontSize="20" Margin="10" 
+                    IsEnabled="{Binding ElementName=RB_SelfDefine,Path=IsChecked}"/>
+            <Button x:Name="Btn_Run" Width="80" Height="50" Click="Btn_Run_Click" Content="Run" FontSize="20" Margin="10"/>
+            <StackPanel HorizontalAlignment="Center">
+                <RadioButton x:Name="RB_Current" GroupName="Type" Content="當前位置" Margin="0,10,0,10" IsChecked="True"/>
+                <RadioButton x:Name="RB_SelfDefine" GroupName="Type" Content="自定義" Margin="0,10,0,10"/>
+            </StackPanel>
         </StackPanel>
         <StackPanel Grid.Row="1">
             <DockPanel Style="{StaticResource Dot_Table_Row}">
@@ -36,9 +41,9 @@
                 <TextBox Text="{Binding Path=Interval, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged" PreviewTextInput="Check_Number"/>
             </DockPanel>
             <DockPanel Style="{StaticResource Dot_Table_Row}">
-                <StackPanel>
-                    <Button x:Name="Btn_Delete" Content="Delete" Click="Btn_Delete_Click"/>
-                    <Button x:Name="Btn_Clear" Content="Clear" Click="Btn_Clear_Click"/>
+                <StackPanel IsEnabled="{Binding ElementName=RB_SelfDefine,Path=IsChecked}">
+                    <Button x:Name="Btn_Delete" Content="Delete" Click="Btn_Delete_Click" Margin="0 10"/>
+                    <Button x:Name="Btn_Clear" Content="Clear" Click="Btn_Clear_Click" Margin="0 10"/>
                 </StackPanel>
             </DockPanel>
         </StackPanel>

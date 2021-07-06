@@ -45,6 +45,10 @@ namespace auTouch
 
         private void Btn_Run_Click(object sender, RoutedEventArgs e)
         {
+            if (RB_Current.IsChecked == true)
+            {
+
+            }
             //if (target == null) return;
             //var p = Get_Dot_Point(target);
             //ms.SetCursorPosition(p);
