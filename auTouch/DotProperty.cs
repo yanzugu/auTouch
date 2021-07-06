@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace auTouch
 {
-    class DotPorperty : INotifyPropertyChanged
+    public class DotPorperty : INotifyPropertyChanged
     {
         public DotPorperty(string name, int count, int interval)
         {
@@ -18,8 +18,8 @@ namespace auTouch
 
         public DotPorperty()
         {
-            _count = 0;
-            _interval = 0;
+            _count = -1;
+            _interval = 1000;
         }
 
         private string _name;

@@ -21,7 +21,7 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0">
             <Button x:Name="Btn_Create" Width="80" Height="50" Click="Btn_Create_Click" Content="Create" FontSize="20"/>
-            <Button x:Name="Btn_Run" Width="80" Height="50" Click="BtnClick" Content="Run" FontSize="20"/>
+            <Button x:Name="Btn_Run" Width="80" Height="50" Click="Btn_Run_Click" Content="Run" FontSize="20"/>
         </StackPanel>
         <StackPanel Grid.Row="1">
             <DockPanel Style="{StaticResource Dot_Table_Row}">
@@ -29,14 +29,17 @@
             </DockPanel>
             <DockPanel Style="{StaticResource Dot_Table_Row}">
                 <TextBlock Margin="0 0 10 0">次數</TextBlock>
-                <TextBox Text="{Binding Path=Count, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Text="{Binding Path=Count, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged" PreviewTextInput="Check_Number"/>
             </DockPanel>
             <DockPanel Style="{StaticResource Dot_Table_Row}">
                 <TextBlock Margin="0 0 10 0">間隔</TextBlock>
-                <TextBox Text="{Binding Path=Interval, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Text="{Binding Path=Interval, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged" PreviewTextInput="Check_Number"/>
             </DockPanel>
             <DockPanel Style="{StaticResource Dot_Table_Row}">
-                <Button Content="Delete" Click="Delete_Dot"/>
+                <StackPanel>
+                    <Button x:Name="Btn_Delete" Content="Delete" Click="Btn_Delete_Click"/>
+                    <Button x:Name="Btn_Clear" Content="Clear" Click="Btn_Clear_Click"/>
+                </StackPanel>
             </DockPanel>
         </StackPanel>
     </Grid>

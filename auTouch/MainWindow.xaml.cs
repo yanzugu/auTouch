@@ -6,53 +6,91 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Linq;
+using System.Windows.Controls;
+using System.Text.RegularExpressions;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 
 namespace auTouch
 {
     public partial class MainWindow : Window
     {
-        MouseSimulator ms = new MouseSimulator();
-        List<Window> dots = new List<Window>();
-        List<DotPorperty> dotPorperties = new List<DotPorperty>();
-        private int index = 0;
-        DotPorperty dp = new DotPorperty();
+        readonly MouseSimulator ms = new();
+        readonly List<Dot> dots = new();
+        private int index = 0;  // 用來命名: dot_{index}
+        private Dot target; // 選定的 Dot
 
         public MainWindow()
         {
             InitializeComponent();
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             this.Closing += MainWindow_Closing;
+            this.KeyDown += MainWindow_KeyDown;
         }
 
-        private void MainWindow_Closing(object sender, CancelEventArgs e)
+        private void Btn_Delete_Click(object sender, RoutedEventArgs e)
         {
-            foreach(var dot in dots)
-            {
-                dot.Close();
-            }
+            Delete_Dot();
         }
 
-        private void BtnClick(object sender, RoutedEventArgs e)
-        {       
-            //var p = window.PointToScreen(new Point(0, 0));
-            //p.X += window.Width / 2; 
-            //p.Y += window.Height / 2;
+        private void Btn_Create_Click(object sender, RoutedEventArgs e)
+        {
+            Create_Dot();
+        }
 
+        private void Btn_Clear_Click(object sender, RoutedEventArgs e)
+        {
+            Clear_Dots();
+        }
+
+        private void Btn_Run_Click(object sender, RoutedEventArgs e)
+        {
+            //if (target == null) return;
+            //var p = Get_Dot_Point(target);
             //ms.SetCursorPosition(p);
         }
 
-        private void Dot_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        private void Check_Number(object sender, TextCompositionEventArgs e)
         {
-            Window window = sender as Window;
-            dp = dotPorperties.Where( i => (i.Name == window.Name)).Select(i => i).FirstOrDefault();
-            this.DataContext = dp;
+            Regex regex = new Regex("[^0-9 ^-]+");
+            e.Handled = (regex.IsMatch(e.Text) || String.IsNullOrWhiteSpace(e.Text));
         }
 
-        private void Delete_Dot(Window dot)
+        private void Create_Dot()
         {
-            dots.Remove(dot);
-            Thread.Sleep(100);
-            dot.Close();
+            Dot dot = new();
+            dot.Topmost = true;
+            dot.Name = "dot_" + index++;
+            dot.MouseLeftButtonDown += Dot_MouseLeftButtonDown;
+            dot.dp.Name = dot.Name;
+            dots.Add(dot);
+            dot.Show();
+        }
+
+        private void Clear_Dots()
+        {
+            foreach (var dot in dots)
+            {
+                dot.Close();
+            }
+            dots.Clear();
+            this.DataContext = null;
+        }
+
+        // 設定個別 Dot 屬性
+        private void Dot_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Dot dot = sender as Dot;
+            target = dot;
+            this.DataContext = target.dp;
+        }
+
+        private void Delete_Dot()
+        {
+            if (target == null) return;
+            dots.Remove(target);
+            target.Close();
+            this.DataContext = null;
         }
 
         private void Drag_Window(object sender, MouseButtonEventArgs e)
@@ -63,27 +101,41 @@ namespace auTouch
             }
         }
 
-        private void Delete_Dot(object sender, RoutedEventArgs e)
+        private Point Get_Dot_Point(Dot dot)
         {
-            Window dot = dots.Where(i => (i.Name == dp.Name)).Select(i => i).FirstOrDefault();
-            if (dot == null) return;
-            dotPorperties.Remove(dp);
-            dots.Remove(dot);
-            dot.Close();
-            this.DataContext = null;
+            Point point = dot.PointToScreen(new Point(0, 0));
+            point.X += dot.Width / 2 + 3;
+            point.Y += dot.Height / 2 + 3;
+
+            return point;
         }
 
-        private void Btn_Create_Click(object sender, RoutedEventArgs e)
+        private void MainWindow_KeyDown(object sender, KeyEventArgs e)
         {
-            Dot dot = new Dot();
-            DotPorperty dotPorperty = new DotPorperty();
-            dot.Topmost = true;
-            dot.Name = "dot_" + index++;
-            dot.MouseRightButtonDown += Dot_MouseRightButtonDown;
-            dotPorperty.Name = dot.Name;
-            dotPorperties.Add(dotPorperty);
-            dots.Add(dot);
-            dot.Show();
+            if (Keyboard.IsKeyDown(Key.F5))
+            {
+                Btn_Run.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            }
         }
-    }  
+
+        private void MainWindow_Closing(object sender, CancelEventArgs e)
+        {
+            // 程式關閉時關閉所有的 Dots
+            foreach (Dot dot in dots)
+            {
+                dot.Close();
+            }
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {      
+            // 移除字串中的空白
+            TextBox textBox = sender as TextBox;
+            if (textBox.Text != textBox.Text.Replace(" ", ""))
+            {
+                textBox.Text = textBox.Text.Replace(" ", "");
+                textBox.CaretIndex = textBox.Text.Length;
+            }
+        }
+    }
 }

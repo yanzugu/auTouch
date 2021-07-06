@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:auTouch"
         mc:Ignorable="d"
-        Height="50" Width="50" WindowStyle="None" BorderThickness="0"
+        Height="30" Width="30" WindowStyle="None" BorderThickness="0"
         ResizeMode="NoResize" MouseDown="Drag_Window" AllowsTransparency="True" Background="Transparent" Cursor="Hand">
     <Window.Resources>
-        <Color x:Key="Dot_Color">AliceBlue</Color>
+        <Color x:Key="Dot_Color">red</Color>
     </Window.Resources>
 
-    <Border BorderThickness="5" CornerRadius="50">
+    <Border BorderThickness="5" CornerRadius="30">
         <Border.Background>
             <SolidColorBrush Color="Black" Opacity="0.1"/>
         </Border.Background>
@@ -19,7 +19,7 @@
             <SolidColorBrush Color="{StaticResource Dot_Color}"/>
         </Border.BorderBrush>
 
-        <Border Width="10" Height="10" CornerRadius="10">
+        <Border Width="5" Height="5" CornerRadius="5">
             <Border.Background>
                 <SolidColorBrush Color="{StaticResource Dot_Color}"/>
             </Border.Background>
