@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:auTouch"
         mc:Ignorable="d"    
-        Title="MainWindow" Height="600" Width="500">
+        Title="MainWindow" Height="400" Width="400">
     <Window.Resources>
         <Style x:Key="Dot_Table_Row" TargetType="DockPanel">
             <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -14,26 +14,47 @@
         </Style>
 
         <Style TargetType="TextBox">
-            <Setter Property="TextAlignment" Value="Right"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Width" Value="80"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Margin" Value="5"/>
         </Style>
     </Window.Resources>
-    
+
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="150"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0">
-            <Button x:Name="Btn_Create" Width="80" Height="50" Click="Btn_Create_Click" Content="Create" FontSize="20" Margin="10" 
-                    IsEnabled="{Binding ElementName=RB_SelfDefine,Path=IsChecked}"/>
-            <Button x:Name="Btn_Run" Width="80" Height="50" Click="Btn_Run_Click" Content="Run" FontSize="20" Margin="10"/>
-            <Button x:Name="Btn_Stop" Width="80" Height="50" Click="Btn_Stop_Click" Content="Stop" FontSize="20" Margin="10" IsEnabled="False"/>
-            <StackPanel HorizontalAlignment="Center" IsEnabled="{Binding ElementName=Btn_Run, Path=IsEnabled}">
-                <RadioButton x:Name="RB_Current" GroupName="Type" Content="當前位置" Margin="0,10,0,10" IsChecked="True" Unchecked="RB_Current_Unchecked" Checked="RB_Current_Checked"/>
-                <RadioButton x:Name="RB_SelfDefine" GroupName="Type" Content="自定義" Margin="0,10,0,10" Unchecked="RB_SelfDefine_Unchecked" Checked="RB_SelfDefine_Checked"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsEnabled="{Binding ElementName=Btn_Run, Path=IsEnabled}">
+                    <RadioButton x:Name="RB_Current" GroupName="Type" Content="當前位置" Margin="0,10,0,10" IsChecked="True" 
+                                 Unchecked="RB_Current_Unchecked" Checked="RB_Current_Checked"/>
+                    <RadioButton x:Name="RB_SelfDefine" GroupName="Type" Content="自定義" Margin="0,10,0,10" Unchecked="RB_SelfDefine_Unchecked" Checked="RB_SelfDefine_Checked"/>
+                </StackPanel>
+                <Grid IsEnabled="{Binding ElementName=RB_SelfDefine,Path=IsChecked}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Button x:Name="Btn_Delete" Click="Btn_Delete_Click" Content="Delete" Grid.Column="1" Grid.Row="0"/>
+                    <Button x:Name="Btn_Create" Click="Btn_Create_Click" Content="Create" Grid.Column="0" Grid.Row="0"/>
+                    <Button x:Name="Btn_Clear" Click="Btn_Clear_Click" Content="Clear" Grid.Row="1" Grid.Column="0"/>
+                    <!--<Button x:Name="Btn_Hotkey" Click="Btn_Hotkey_Click" Content="HotKey" Grid.Column="1" Grid.Row="1"/>-->
+                </Grid>
             </StackPanel>
         </StackPanel>
-        <StackPanel Grid.Row="1" IsEnabled="{Binding ElementName=Btn_Run, Path=IsEnabled}">
+        <StackPanel Grid.Row="1">
             <DockPanel Style="{StaticResource Dot_Table_Row}">
                 <TextBlock Text="{Binding Path=Name}"/>
             </DockPanel>
@@ -53,12 +74,11 @@
                     <TextBlock Text="ms" Margin="5 0"/>
                 </StackPanel>
             </DockPanel>
-            <DockPanel Style="{StaticResource Dot_Table_Row}">
-                <StackPanel IsEnabled="{Binding ElementName=RB_SelfDefine,Path=IsChecked}">
-                    <Button x:Name="Btn_Delete" Content="Delete" Click="Btn_Delete_Click" Margin="0 10"/>
-                    <Button x:Name="Btn_Clear" Content="Clear" Click="Btn_Clear_Click" Margin="0 10"/>
-                </StackPanel>
-            </DockPanel>
         </StackPanel>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="2">
+                <Button x:Name="Btn_Run" Click="Btn_Run_Click" Content="Run"/>
+                <Button x:Name="Btn_Stop" Click="Btn_Stop_Click" Content="Stop" IsEnabled="False"/>
+            </StackPanel>
     </Grid>
 </Window>

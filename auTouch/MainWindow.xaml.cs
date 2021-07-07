@@ -78,8 +78,8 @@ namespace auTouch
 
         private void Check_Number(object sender, TextCompositionEventArgs e)
         {
-            Regex regex = new Regex("[^0-9 ^-]+");
-            e.Handled = (regex.IsMatch(e.Text) || String.IsNullOrWhiteSpace(e.Text));
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
         }
 
         private void Create_Dot()
@@ -105,7 +105,7 @@ namespace auTouch
 
         private void Dowork_Current_Click(object sender, DoWorkEventArgs e)
         {
-            if (currentDot.dp.Count == -1) // Infinite Click
+            if (currentDot.dp.Count == 0) // Infinite Click
             {
                 while (true)
                 {
@@ -243,6 +243,13 @@ namespace auTouch
             if (textBox.Text != textBox.Text.Replace(" ", ""))
             {
                 textBox.Text = textBox.Text.Replace(" ", "");
+                textBox.CaretIndex = textBox.Text.Length;
+            }
+
+            // 避免字串為空
+            if (textBox.Text == "")
+            {
+                textBox.Text = "0";
                 textBox.CaretIndex = textBox.Text.Length;
             }
         }

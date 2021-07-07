@@ -11,7 +11,7 @@ namespace auTouch
     {
         public DotPorperty()
         {
-            _count = -1;
+            _count = 0;
             _min = 0;
             _sec = 1;
             _ms = 0;
@@ -42,7 +42,7 @@ namespace auTouch
             }
             set
             {
-                _count = value < -1 ? -1 : value;
+                _count = value < 0 ? 0 : value;
                 OnPropertyChanged("Count");
             }
         }
