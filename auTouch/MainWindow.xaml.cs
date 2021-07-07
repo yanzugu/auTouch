@@ -18,17 +18,19 @@ namespace auTouch
     {
         readonly MouseSimulator ms = new();
         readonly List<Dot> dots = new();
+        readonly Dot currentModeDot = new();
 
         private BackgroundWorker bw;
         private int index = 0;  // 用來命名: dot_{index}
-        private Dot target; // 選定的 Dot
+        private Dot currentDot; // 當前選定的 Dot
 
         public MainWindow()
         {
             InitializeComponent();
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             this.Closing += MainWindow_Closing;
-            this.KeyDown += MainWindow_KeyDown;
+
+            currentModeDot.dp.Name = "Current Cuorsor";
         }
 
         private void Btn_Delete_Click(object sender, RoutedEventArgs e)
@@ -54,21 +56,17 @@ namespace auTouch
 
             if (RB_Current.IsChecked == true)
             {
-                int count = 0, interval = 0;
-                if (!int.TryParse(TB_Count.Text, out count) || !int.TryParse(TB_Interval.Text, out interval))
-                    return;
-
                 Btn_Stop.IsEnabled = true;
                 Btn_Run.IsEnabled = false;
 
                 bw.DoWork += ((sender, e) =>
                 {
-                    if (count < 0)
+                    if (currentDot.dp.Count == -1) // Infinite Click
                     {
                         while (true)
                         {
                             ms.MouseLeftClickEvent();
-                            Thread.Sleep(interval);
+                            Thread.Sleep(currentDot.dp.Interval);
                             if (bw.CancellationPending == true)
                             {
                                 e.Cancel = true;
@@ -78,10 +76,10 @@ namespace auTouch
                     }
                     else
                     {
-                        for (int i = 0; i < count; i++)
+                        for (int i = 0; i < currentDot.dp.Count; i++)
                         {
                             ms.MouseLeftClickEvent();
-                            Thread.Sleep(interval);
+                            Thread.Sleep(currentDot.dp.Interval);
                             if (bw.CancellationPending == true)
                             {
                                 e.Cancel = true;
@@ -117,7 +115,7 @@ namespace auTouch
         {
             Dot dot = new();
             dot.Topmost = true;
-            dot.Name = "dot_" + index++;
+            dot.Name = "Dot_" + index++;
             dot.MouseLeftButtonDown += Dot_MouseLeftButtonDown;
             dot.dp.Name = dot.Name;
             dots.Add(dot);
@@ -138,15 +136,15 @@ namespace auTouch
         private void Dot_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             Dot dot = sender as Dot;
-            target = dot;
-            this.DataContext = target.dp;
+            currentDot = dot;
+            this.DataContext = currentDot.dp;
         }
 
         private void Delete_Dot()
         {
-            if (target == null) return;
-            dots.Remove(target);
-            target.Close();
+            if (currentDot == null) return;
+            dots.Remove(currentDot);
+            currentDot.Close();
             this.DataContext = null;
         }
 
@@ -167,20 +165,41 @@ namespace auTouch
             return point;
         }
 
-        private void MainWindow_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (Keyboard.IsKeyDown(Key.F5))
-            {
-                Btn_Run.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-            }
-        }
-
         private void MainWindow_Closing(object sender, CancelEventArgs e)
         {
             // 程式關閉時關閉所有的 Dots
             foreach (Dot dot in dots)
             {
                 dot.Close();
+            }
+            currentDot.Close();
+        }
+
+        private void RB_Current_Checked(object sender, RoutedEventArgs e)
+        {
+            currentDot = currentModeDot;
+            this.DataContext = currentDot.dp;
+        }
+
+        private void RB_Current_Unchecked(object sender, RoutedEventArgs e)
+        {
+            currentDot = null;
+            this.DataContext = null;
+        }
+
+        private void RB_SelfDefine_Unchecked(object sender, RoutedEventArgs e)
+        {
+            foreach (Dot dot in dots)
+            {
+                dot.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void RB_SelfDefine_Checked(object sender, RoutedEventArgs e)
+        {
+            foreach (Dot dot in dots)
+            {
+                dot.Visibility = Visibility.Visible;
             }
         }
 

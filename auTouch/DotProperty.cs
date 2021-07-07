@@ -9,22 +9,17 @@ namespace auTouch
 {
     public class DotPorperty : INotifyPropertyChanged
     {
-        public DotPorperty(string name, int count, int interval)
-        {
-            _name = name;
-            _count = count;
-            _interval = interval;
-        }
-
         public DotPorperty()
         {
             _count = -1;
-            _interval = 1000;
+            _min = 0;
+            _sec = 1;
+            _ms = 0;
         }
 
         private string _name;
         private int _count;
-        private int _interval;
+        private int _min, _sec, _ms;
 
         public string Name
         {
@@ -47,8 +42,47 @@ namespace auTouch
             }
             set
             {
-                _count = value;
+                _count = value < -1 ? -1 : value;
                 OnPropertyChanged("Count");
+            }
+        }
+
+        public int Min
+        {
+            get
+            {
+                return _min;
+            }
+            set
+            {
+                _min = value;
+                OnPropertyChanged("Min");
+            }
+        }
+
+        public int Sec
+        {
+            get
+            {
+                return _sec;
+            }
+            set
+            {
+                _sec = value > 59 ? 59 : value;
+                OnPropertyChanged("Sec");
+            }
+        }
+
+        public int Ms
+        {
+            get
+            {
+                return _ms;
+            }
+            set
+            {
+                _ms = value > 999 ?  999 : value;
+                OnPropertyChanged("Ms");
             }
         }
 
@@ -56,12 +90,7 @@ namespace auTouch
         {
             get
             {
-                return _interval;
-            }
-            set
-            {
-                _interval = value;
-                OnPropertyChanged("Interval");
+                return (_min * 3600 * 1000) + (_sec * 1000) + _ms;
             }
         }
 
