@@ -29,8 +29,12 @@ namespace auTouch
             InitializeComponent();
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             this.Closing += MainWindow_Closing;
-
             currentModeDot.dp.Name = "Current Cuorsor";
+        }
+
+        private void Bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Inverse_Button_State();
         }
 
         private void Btn_Delete_Click(object sender, RoutedEventArgs e)
@@ -50,55 +54,22 @@ namespace auTouch
 
         private void Btn_Run_Click(object sender, RoutedEventArgs e)
         {
-            bw = new();
-            bw.WorkerReportsProgress = true;
-            bw.WorkerSupportsCancellation = true;
+            Inverse_Button_State();
 
             if (RB_Current.IsChecked == true)
             {
-                Btn_Stop.IsEnabled = true;
-                Btn_Run.IsEnabled = false;
-
-                bw.DoWork += ((sender, e) =>
-                {
-                    if (currentDot.dp.Count == -1) // Infinite Click
-                    {
-                        while (true)
-                        {
-                            ms.MouseLeftClickEvent();
-                            Thread.Sleep(currentDot.dp.Interval);
-                            if (bw.CancellationPending == true)
-                            {
-                                e.Cancel = true;
-                                break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 0; i < currentDot.dp.Count; i++)
-                        {
-                            ms.MouseLeftClickEvent();
-                            Thread.Sleep(currentDot.dp.Interval);
-                            if (bw.CancellationPending == true)
-                            {
-                                e.Cancel = true;
-                                break;
-                            }
-                        }
-                    }
-                });
-                bw.RunWorkerAsync();
+                Run_Mode_Current();
             }
             else
             {
+                Run_Mode_SelfDefine();
             }
+
+            bw.RunWorkerAsync();
         }
 
         private void Btn_Stop_Click(object sender, RoutedEventArgs e)
         {
-            Btn_Stop.IsEnabled = false;
-            Btn_Run.IsEnabled = true;
             if (bw != null && bw.WorkerSupportsCancellation == true)
             {
                 bw.CancelAsync();
@@ -130,6 +101,41 @@ namespace auTouch
             }
             dots.Clear();
             this.DataContext = null;
+        }
+
+        private void Dowork_Current_Click(object sender, DoWorkEventArgs e)
+        {
+            if (currentDot.dp.Count == -1) // Infinite Click
+            {
+                while (true)
+                {
+                    if (bw.CancellationPending == true)
+                    {
+                        e.Cancel = true;
+                        break;
+                    }
+                    ms.MouseLeftClickEvent();
+                    Thread.Sleep(currentDot.dp.Interval);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < currentDot.dp.Count; i++)
+                {
+                    if (bw.CancellationPending == true)
+                    {
+                        e.Cancel = true;
+                        break;
+                    }
+                    ms.MouseLeftClickEvent();
+                    Thread.Sleep(currentDot.dp.Interval);
+                }
+            }
+        }
+
+        private void Dowork_SelfDefine_Click(object sender, DoWorkEventArgs e)
+        {
+            MessageBox.Show("");
         }
 
         // 設定個別 Dot 屬性
@@ -165,6 +171,21 @@ namespace auTouch
             return point;
         }
 
+        // 對調 Run / Stop 按鈕狀態
+        private void Inverse_Button_State()
+        {
+            Btn_Run.IsEnabled = !Btn_Run.IsEnabled;
+            Btn_Stop.IsEnabled = !Btn_Stop.IsEnabled;
+        }
+
+        private void Initialize_BackgroundWorker()
+        {
+            bw = new();
+            bw.WorkerReportsProgress = true;
+            bw.WorkerSupportsCancellation = true;
+            bw.RunWorkerCompleted += Bw_RunWorkerCompleted;
+        }
+
         private void MainWindow_Closing(object sender, CancelEventArgs e)
         {
             // 程式關閉時關閉所有的 Dots
@@ -172,9 +193,21 @@ namespace auTouch
             {
                 dot.Close();
             }
-            currentDot.Close();
+            currentModeDot.Close();
         }
 
+        private void Run_Mode_Current()
+        {
+            Initialize_BackgroundWorker();
+            bw.DoWork += Dowork_Current_Click;
+        }
+
+        private void Run_Mode_SelfDefine()
+        {
+            Initialize_BackgroundWorker();
+            bw.DoWork += Dowork_SelfDefine_Click;
+        }
+        
         private void RB_Current_Checked(object sender, RoutedEventArgs e)
         {
             currentDot = currentModeDot;

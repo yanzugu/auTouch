@@ -55,7 +55,10 @@ namespace auTouch
             }
             set
             {
-                _min = value;
+                if (value < 0)
+                    _min = 0;
+                else
+                    _min = value;
                 OnPropertyChanged("Min");
             }
         }
@@ -68,7 +71,10 @@ namespace auTouch
             }
             set
             {
-                _sec = value > 59 ? 59 : value;
+                if (value < 0)
+                    _sec = 0;
+                else
+                    _sec = value > 59 ? 59 : value;
                 OnPropertyChanged("Sec");
             }
         }
@@ -81,7 +87,10 @@ namespace auTouch
             }
             set
             {
-                _ms = value > 999 ?  999 : value;
+                if (value < 0)
+                    _ms = 0;
+                else
+                    _ms = value > 999 ? 999 : value;
                 OnPropertyChanged("Ms");
             }
         }
