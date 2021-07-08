@@ -103,16 +103,16 @@ namespace auTouch
         }
 
         private void Btn_Run_Click(object sender, RoutedEventArgs e)
-        {
-            Inverse_Button_State();
-
+        {          
             if (RB_Current.IsChecked == true)
             {
+                Inverse_Button_State();
                 Run_Mode_Current();
             }
             else
             {
                 if (dots.Count == 0) return;
+                Inverse_Button_State();
                 Hide_Dots();
                 Run_Mode_SelfDefine();
             }
