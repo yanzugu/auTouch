@@ -31,14 +31,14 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0">
+        <StackPanel Grid.Row="0" VerticalAlignment="Center">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsEnabled="{Binding ElementName=Btn_Run, Path=IsEnabled}">
                     <RadioButton x:Name="RB_Current" GroupName="Type" Content="當前位置" Margin="0,10,0,10" IsChecked="True" 
                                  Unchecked="RB_Current_Unchecked" Checked="RB_Current_Checked"/>
                     <RadioButton x:Name="RB_SelfDefine" GroupName="Type" Content="自定義" Margin="0,10,0,10" Unchecked="RB_SelfDefine_Unchecked" Checked="RB_SelfDefine_Checked"/>
                 </StackPanel>
-                <Grid IsEnabled="{Binding ElementName=RB_SelfDefine,Path=IsChecked}">
+                <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
@@ -47,16 +47,16 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Button x:Name="Btn_Delete" Click="Btn_Delete_Click" Content="Delete" Grid.Column="1" Grid.Row="0"/>
-                    <Button x:Name="Btn_Create" Click="Btn_Create_Click" Content="Create" Grid.Column="0" Grid.Row="0"/>
-                    <Button x:Name="Btn_Clear" Click="Btn_Clear_Click" Content="Clear" Grid.Row="1" Grid.Column="0"/>
-                    <!--<Button x:Name="Btn_Hotkey" Click="Btn_Hotkey_Click" Content="HotKey" Grid.Column="1" Grid.Row="1"/>-->
+                    <Button x:Name="Btn_Delete" Click="Btn_Delete_Click" Content="Delete" Grid.Column="1" Grid.Row="0" IsEnabled="{Binding ElementName=RB_SelfDefine,Path=IsChecked}"/>
+                    <Button x:Name="Btn_Create" Click="Btn_Create_Click" Content="Create" Grid.Column="0" Grid.Row="0" IsEnabled="{Binding ElementName=RB_SelfDefine,Path=IsChecked}"/>
+                    <Button x:Name="Btn_Clear" Click="Btn_Clear_Click" Content="Clear" Grid.Row="1" Grid.Column="0" IsEnabled="{Binding ElementName=RB_SelfDefine,Path=IsChecked}"/>
+                    <Button x:Name="Btn_Hotkey" Click="Btn_Hotkey_Click" Content="HotKey" Grid.Row="1" Grid.Column="1" IsEnabled="{Binding ElementName=Btn_Run,Path=IsEnabled}"/>
                 </Grid>
             </StackPanel>
         </StackPanel>
-        <StackPanel Grid.Row="1">
+        <StackPanel Grid.Row="1" IsEnabled="{Binding ElementName=Btn_Run, Path=IsEnabled}">
             <DockPanel Style="{StaticResource Dot_Table_Row}">
-                <TextBlock Text="{Binding Path=Name}"/>
+                <TextBlock Text="{Binding Path=Name, FallbackValue=No Dot Selected.}"/>
             </DockPanel>
             <DockPanel Style="{StaticResource Dot_Table_Row}">
                 <TextBlock Margin="0 0 10 0">次數</TextBlock>
@@ -76,9 +76,9 @@
             </DockPanel>
         </StackPanel>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="2">
-                <Button x:Name="Btn_Run" Click="Btn_Run_Click" Content="Run"/>
-                <Button x:Name="Btn_Stop" Click="Btn_Stop_Click" Content="Stop" IsEnabled="False"/>
-            </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="2">
+            <Button x:Name="Btn_Run" Click="Btn_Run_Click" Content="Run"/>
+            <Button x:Name="Btn_Stop" Click="Btn_Stop_Click" Content="Stop" IsEnabled="False"/>
+        </StackPanel>
     </Grid>
 </Window>

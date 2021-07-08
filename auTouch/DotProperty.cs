@@ -99,7 +99,13 @@ namespace auTouch
         {
             get
             {
-                return (_min * 3600 * 1000) + (_sec * 1000) + _ms;
+                int total = (_min * 3600 * 1000) + (_sec * 1000) + _ms;
+                if (total < 10)
+                {
+                    total = 10;
+                    Ms = 10;
+                }
+                return total;
             }
         }
 

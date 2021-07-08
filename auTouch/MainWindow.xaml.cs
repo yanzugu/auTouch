@@ -11,6 +11,8 @@ using System.Text.RegularExpressions;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Diagnostics;
+using System.Windows.Interop;
+using System.Windows.Data;
 
 namespace auTouch
 {
@@ -23,6 +25,22 @@ namespace auTouch
         private BackgroundWorker bw;
         private int index = 0;  // 用來命名: dot_{index}
         private Dot currentDot; // 當前選定的 Dot
+        private bool isRunning = false;
+        private Key hotkey = Key.F10;
+        private uint VK_Hotkey
+        {
+            get
+            {
+                return (uint)KeyInterop.VirtualKeyFromKey(hotkey);
+            }
+        }
+        private string hotkeyName
+        {
+            get
+            {
+                return hotkey.ToString();
+            }
+        }
 
         public MainWindow()
         {
@@ -52,6 +70,34 @@ namespace auTouch
             Clear_Dots();
         }
 
+        private void Btn_Hotkey_Click(object sender, RoutedEventArgs e)
+        {
+            Window window = new Window();
+            window.Width = 240;
+            window.Height = 150;
+            window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            window.ResizeMode = ResizeMode.NoResize;
+            TextBlock textBlock = new TextBlock() {
+                Text = hotkeyName,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                FontSize = 40
+            };
+            window.Content = textBlock;
+            window.KeyDown += Set_Hotkey_Window_KeyDown;
+            window.Show();
+        }
+
+        private void Set_Hotkey_Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            hotkey = e.Key;
+            Window window = sender as Window;
+            TextBlock textBlock = window.Content as TextBlock;
+            textBlock.Text = hotkeyName;
+            UnregisterHotKey();
+            RegisterHotKey();
+        }
+
         private void Btn_Run_Click(object sender, RoutedEventArgs e)
         {
             Inverse_Button_State();
@@ -66,6 +112,7 @@ namespace auTouch
             }
 
             bw.RunWorkerAsync();
+            isRunning = true;
         }
 
         private void Btn_Stop_Click(object sender, RoutedEventArgs e)
@@ -73,6 +120,7 @@ namespace auTouch
             if (bw != null && bw.WorkerSupportsCancellation == true)
             {
                 bw.CancelAsync();
+                isRunning = false;
             }
         }
 
@@ -103,7 +151,7 @@ namespace auTouch
             this.DataContext = null;
         }
 
-        private void Dowork_Current_Click(object sender, DoWorkEventArgs e)
+        private void Dowork_Current(object sender, DoWorkEventArgs e)
         {
             if (currentDot.dp.Count == 0) // Infinite Click
             {
@@ -133,7 +181,7 @@ namespace auTouch
             }
         }
 
-        private void Dowork_SelfDefine_Click(object sender, DoWorkEventArgs e)
+        private void Dowork_SelfDefine(object sender, DoWorkEventArgs e)
         {
             MessageBox.Show("");
         }
@@ -199,15 +247,15 @@ namespace auTouch
         private void Run_Mode_Current()
         {
             Initialize_BackgroundWorker();
-            bw.DoWork += Dowork_Current_Click;
+            bw.DoWork += Dowork_Current;
         }
 
         private void Run_Mode_SelfDefine()
         {
             Initialize_BackgroundWorker();
-            bw.DoWork += Dowork_SelfDefine_Click;
+            bw.DoWork += Dowork_SelfDefine;
         }
-        
+
         private void RB_Current_Checked(object sender, RoutedEventArgs e)
         {
             currentDot = currentModeDot;
@@ -251,6 +299,85 @@ namespace auTouch
             {
                 textBox.Text = "0";
                 textBox.CaretIndex = textBox.Text.Length;
+            }
+        }
+
+
+        [DllImport("User32.dll")]
+        private static extern bool RegisterHotKey(
+            [In] IntPtr hWnd,
+            [In] int id,
+            [In] uint fsModifiers,
+            [In] uint vk);
+
+        [DllImport("User32.dll")]
+        private static extern bool UnregisterHotKey(
+            [In] IntPtr hWnd,
+            [In] int id);
+
+        private HwndSource _source;
+        private const int HOTKEY_ID = 9000;
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+            var helper = new WindowInteropHelper(this);
+            _source = HwndSource.FromHwnd(helper.Handle);
+            _source.AddHook(HwndHook);
+            RegisterHotKey();
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            _source.RemoveHook(HwndHook);
+            _source = null;
+            UnregisterHotKey();
+            base.OnClosed(e);
+        }
+
+        private void RegisterHotKey()
+        {
+            var helper = new WindowInteropHelper(this);
+            //const uint MOD_CTRL = 0x0002;
+            if (!RegisterHotKey(helper.Handle, HOTKEY_ID, 0, VK_Hotkey))
+            {
+                // handle error
+            }
+        }
+
+        private void UnregisterHotKey()
+        {
+            var helper = new WindowInteropHelper(this);
+            UnregisterHotKey(helper.Handle, HOTKEY_ID);
+        }
+
+        private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            const int WM_HOTKEY = 0x0312;
+            switch (msg)
+            {
+                case WM_HOTKEY:
+                    switch (wParam.ToInt32())
+                    {
+                        case HOTKEY_ID:
+                            OnHotKeyPressed();
+                            handled = true;
+                            break;
+                    }
+                    break;
+            }
+            return IntPtr.Zero;
+        }
+
+        private void OnHotKeyPressed()
+        {
+            if (isRunning)
+            {
+                Btn_Stop.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            }
+            else
+            {
+                Btn_Run.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             }
         }
     }
