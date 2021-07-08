@@ -29,6 +29,7 @@ namespace auTouch
             point = Get_Point();
         }
 
+        // 取得當前位置
         private Point Get_Point()
         {
             var p = this.PointToScreen(new Point(0, 0));
@@ -74,7 +75,6 @@ namespace auTouch
                 ts = dt2.Subtract(dt1);
                 if (ts.TotalMilliseconds > dp.Interval)
                 {
-                    Trace.WriteLine(dp.Name);
                     dt1 = DateTime.Now;
                     ms.SetCursorPosition(point);
                     Click_Event();
@@ -87,7 +87,6 @@ namespace auTouch
                 ts = dt2.Subtract(dt1);
                 if (ts.TotalMilliseconds > dp.Interval)
                 {
-                    Trace.WriteLine(dp.Name);
                     dt1 = DateTime.Now;
                     ms.SetCursorPosition(point);
                     Click_Event();
