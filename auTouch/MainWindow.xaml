@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:auTouch"
         mc:Ignorable="d"    
-        Title="MainWindow" Height="400" Width="400">
+        Title="MainWindow" Height="430" Width="300" ResizeMode="CanMinimize">
     <Window.Resources>
         <Style x:Key="Dot_Table_Row" TargetType="DockPanel">
             <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="Width" Value="220"/>
+            <Setter Property="Width" Value="250"/>
             <Setter Property="Margin" Value="10"/>
         </Style>
 
@@ -22,6 +22,10 @@
             <Setter Property="Height" Value="50"/>
             <Setter Property="FontSize" Value="20"/>
             <Setter Property="Margin" Value="5"/>
+        </Style>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="15"/>
         </Style>
     </Window.Resources>
 
@@ -38,7 +42,7 @@
                                  Unchecked="RB_Current_Unchecked" Checked="RB_Current_Checked"/>
                     <RadioButton x:Name="RB_SelfDefine" GroupName="Type" Content="自定義" Margin="0,10,0,10" Unchecked="RB_SelfDefine_Unchecked" Checked="RB_SelfDefine_Checked"/>
                 </StackPanel>
-                <Grid>
+                <Grid Margin="10 0 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
@@ -47,38 +51,39 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Button x:Name="Btn_Delete" Click="Btn_Delete_Click" Content="Delete" Grid.Column="1" Grid.Row="0" IsEnabled="{Binding ElementName=RB_SelfDefine,Path=IsChecked}"/>
-                    <Button x:Name="Btn_Create" Click="Btn_Create_Click" Content="Create" Grid.Column="0" Grid.Row="0" IsEnabled="{Binding ElementName=RB_SelfDefine,Path=IsChecked}"/>
-                    <Button x:Name="Btn_Clear" Click="Btn_Clear_Click" Content="Clear" Grid.Row="1" Grid.Column="0" IsEnabled="{Binding ElementName=RB_SelfDefine,Path=IsChecked}"/>
-                    <Button x:Name="Btn_Hotkey" Click="Btn_Hotkey_Click" Content="HotKey" Grid.Row="1" Grid.Column="1" IsEnabled="{Binding ElementName=Btn_Run,Path=IsEnabled}"/>
+                    <Button x:Name="Btn_Delete" Click="Btn_Delete_Click" Content="刪除" Grid.Column="1" Grid.Row="0" IsEnabled="{Binding ElementName=RB_SelfDefine,Path=IsChecked}"/>
+                    <Button x:Name="Btn_Create" Click="Btn_Create_Click" Content="新增" Grid.Column="0" Grid.Row="0" IsEnabled="{Binding ElementName=RB_SelfDefine,Path=IsChecked}"/>
+                    <Button x:Name="Btn_Clear" Click="Btn_Clear_Click" Content="清除" Grid.Row="1" Grid.Column="0" IsEnabled="{Binding ElementName=RB_SelfDefine,Path=IsChecked}"/>
+                    <Button x:Name="Btn_Hotkey" Click="Btn_Hotkey_Click" Content="快捷鍵" Grid.Row="1" Grid.Column="1" IsEnabled="{Binding ElementName=Btn_Run,Path=IsEnabled}"/>
                 </Grid>
             </StackPanel>
         </StackPanel>
         <StackPanel Grid.Row="1" IsEnabled="{Binding ElementName=Btn_Run, Path=IsEnabled}">
             <DockPanel Style="{StaticResource Dot_Table_Row}">
-                <TextBlock Text="{Binding Path=Name, FallbackValue=No Dot Selected.}"/>
+                <TextBlock Text="{Binding Path=Name, FallbackValue=未選定目標}"/>
             </DockPanel>
             <DockPanel Style="{StaticResource Dot_Table_Row}">
                 <TextBlock Margin="0 0 10 0">次數</TextBlock>
-                <TextBox x:Name="TB_Count" Text="{Binding  Path=Count, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}" TextChanged="TextBox_TextChanged" PreviewTextInput="Check_Number" Width="102"/>
-                <TextBlock Text="times" Margin="5 0"/>
+                <TextBox x:Name="TB_Count" Text="{Binding  Path=Count, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}" TextChanged="TextBox_TextChanged" PreviewTextInput="Check_Number" Width="58"/>
+                <TextBlock Text="次" Margin="5 0"/>
+                <TextBlock Text="0 為無限次" Margin="5 0" Foreground="Red"/>
             </DockPanel>
             <DockPanel Style="{StaticResource Dot_Table_Row}">
                 <TextBlock Margin="0 0 10 0">間隔</TextBlock>
                 <StackPanel Orientation="Horizontal">
                     <TextBox x:Name="TB_Interval_Minute" Text="{Binding Path=Min, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}" TextChanged="TextBox_TextChanged" PreviewTextInput="Check_Number" Width="35"/>
-                    <TextBlock Text="min" Margin="5 0"/>
+                    <TextBlock Text="分" Margin="5 0"/>
                     <TextBox x:Name="TB_Interval_Second" Text="{Binding Path=Sec, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}" TextChanged="TextBox_TextChanged" PreviewTextInput="Check_Number" Width="35"/>
-                    <TextBlock Text="sec" Margin="5 0"/>
+                    <TextBlock Text="秒" Margin="5 0"/>
                     <TextBox x:Name="TB_Interval_MiliSecond" Text="{Binding Path=Ms, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}" TextChanged="TextBox_TextChanged" PreviewTextInput="Check_Number" Width="35"/>
-                    <TextBlock Text="ms" Margin="5 0"/>
+                    <TextBlock Text="毫秒" Margin="5 0"/>
                 </StackPanel>
             </DockPanel>
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="2">
-            <Button x:Name="Btn_Run" Click="Btn_Run_Click" Content="Run"/>
-            <Button x:Name="Btn_Stop" Click="Btn_Stop_Click" Content="Stop" IsEnabled="False"/>
+            <Button x:Name="Btn_Run" Click="Btn_Run_Click" Content="啟動"/>
+            <Button x:Name="Btn_Stop" Click="Btn_Stop_Click" Content="停止" IsEnabled="False"/>
         </StackPanel>
     </Grid>
 </Window>

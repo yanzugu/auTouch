@@ -303,6 +303,7 @@ namespace auTouch
         }
 
 
+        // 背景讀取快捷鍵
         [DllImport("User32.dll")]
         private static extern bool RegisterHotKey(
             [In] IntPtr hWnd,
