@@ -9,10 +9,7 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Text.RegularExpressions;
 using System.Windows.Controls.Primitives;
-using System.Windows.Media;
-using System.Diagnostics;
 using System.Windows.Interop;
-using System.Windows.Data;
 
 namespace auTouch
 {
@@ -27,6 +24,8 @@ namespace auTouch
         private Dot currentDot; // 當前選定的 Dot
         private bool isRunning = false;
         private Key hotkey = Key.F10;
+
+        // 回傳快捷鍵的 VK code
         private uint VK_Hotkey
         {
             get
@@ -52,6 +51,7 @@ namespace auTouch
 
         private void Bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            isRunning = false;
             Inverse_Button_State();
         }
 
@@ -88,6 +88,7 @@ namespace auTouch
             window.Show();
         }
 
+        // 設定快捷鍵
         private void Set_Hotkey_Window_KeyDown(object sender, KeyEventArgs e)
         {
             hotkey = e.Key;
@@ -119,8 +120,7 @@ namespace auTouch
         {
             if (bw != null && bw.WorkerSupportsCancellation == true)
             {
-                bw.CancelAsync();
-                isRunning = false;
+                bw.CancelAsync();             
             }
         }
 
