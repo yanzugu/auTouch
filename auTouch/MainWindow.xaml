@@ -71,18 +71,18 @@
             </DockPanel>
             <DockPanel Style="{StaticResource Dot_Table_Row}">
                 <TextBlock Margin="0 0 10 0">次數</TextBlock>
-                <TextBox x:Name="TB_Count" Text="{Binding  Path=Count, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}" TextChanged="TextBox_TextChanged" PreviewTextInput="Check_Number" Width="58"/>
+                <TextBox x:Name="TB_Count" Text="{Binding  Path=Count, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}" TextChanged="TextBox_TextChanged" PreviewTextInput="Check_Number" Width="66"/>
                 <TextBlock Text="次" Margin="5 0"/>
-                <TextBlock Text="0 為無限次" Margin="5 0" Foreground="Red"/>
+                <TextBlock Text="0 為無限次" HorizontalAlignment="Right" Margin="5 0" Foreground="Red"/>
             </DockPanel>
             <DockPanel Style="{StaticResource Dot_Table_Row}">
                 <TextBlock Margin="0 0 10 0">間隔</TextBlock>
-                <StackPanel Orientation="Horizontal">
-                    <TextBox x:Name="TB_Interval_Minute" Text="{Binding Path=Min, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}" TextChanged="TextBox_TextChanged" PreviewTextInput="Check_Number" Width="35"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <TextBox x:Name="TB_Interval_Minute" Text="{Binding Path=Min, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}" TextChanged="TextBox_TextChanged" PreviewTextInput="Check_Number" Width="40"/>
                     <TextBlock Text="分" Margin="5 0"/>
-                    <TextBox x:Name="TB_Interval_Second" Text="{Binding Path=Sec, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}" TextChanged="TextBox_TextChanged" PreviewTextInput="Check_Number" Width="35"/>
+                    <TextBox x:Name="TB_Interval_Second" Text="{Binding Path=Sec, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}" TextChanged="TextBox_TextChanged" PreviewTextInput="Check_Number" Width="40"/>
                     <TextBlock Text="秒" Margin="5 0"/>
-                    <TextBox x:Name="TB_Interval_MiliSecond" Text="{Binding Path=Ms, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}" TextChanged="TextBox_TextChanged" PreviewTextInput="Check_Number" Width="35"/>
+                    <TextBox x:Name="TB_Interval_MiliSecond" Text="{Binding Path=Ms, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}" TextChanged="TextBox_TextChanged" PreviewTextInput="Check_Number" Width="40"/>
                     <TextBlock Text="毫秒" Margin="5 0"/>
                 </StackPanel>
             </DockPanel>

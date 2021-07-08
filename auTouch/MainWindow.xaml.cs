@@ -183,7 +183,7 @@ namespace auTouch
 
         private void Dowork_SelfDefine(object sender, DoWorkEventArgs e)
         {
-            MessageBox.Show("");
+            if (dots.Count == 0) return;
         }
 
         // 設定個別 Dot 屬性
