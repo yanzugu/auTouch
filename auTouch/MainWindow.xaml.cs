@@ -53,6 +53,7 @@ namespace auTouch
         {
             isRunning = false;
             Inverse_Button_State();
+            Show_Dots();
         }
 
         private void Btn_Delete_Click(object sender, RoutedEventArgs e)
@@ -62,7 +63,8 @@ namespace auTouch
 
         private void Btn_Create_Click(object sender, RoutedEventArgs e)
         {
-            Create_Dot();
+            currentDot = Create_Dot();
+            this.DataContext = currentDot.dp;
         }
 
         private void Btn_Clear_Click(object sender, RoutedEventArgs e)
@@ -77,7 +79,8 @@ namespace auTouch
             window.Height = 150;
             window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             window.ResizeMode = ResizeMode.NoResize;
-            TextBlock textBlock = new TextBlock() {
+            TextBlock textBlock = new TextBlock()
+            {
                 Text = hotkeyName,
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -109,6 +112,8 @@ namespace auTouch
             }
             else
             {
+                if (dots.Count == 0) return;
+                Hide_Dots();
                 Run_Mode_SelfDefine();
             }
 
@@ -120,7 +125,7 @@ namespace auTouch
         {
             if (bw != null && bw.WorkerSupportsCancellation == true)
             {
-                bw.CancelAsync();             
+                bw.CancelAsync();
             }
         }
 
@@ -130,7 +135,7 @@ namespace auTouch
             e.Handled = regex.IsMatch(e.Text);
         }
 
-        private void Create_Dot()
+        private Dot Create_Dot()
         {
             Dot dot = new();
             dot.Topmost = true;
@@ -139,6 +144,7 @@ namespace auTouch
             dot.dp.Name = dot.Name;
             dots.Add(dot);
             dot.Show();
+            return dot;
         }
 
         private void Clear_Dots()
@@ -151,6 +157,7 @@ namespace auTouch
             this.DataContext = null;
         }
 
+        // 當前位置邏輯
         private void Dowork_Current(object sender, DoWorkEventArgs e)
         {
             if (currentDot.dp.Count == 0) // Infinite Click
@@ -181,9 +188,23 @@ namespace auTouch
             }
         }
 
+        // 自定義邏輯
         private void Dowork_SelfDefine(object sender, DoWorkEventArgs e)
         {
-            if (dots.Count == 0) return;
+            while (true)
+            {
+                foreach (Dot dot in dots)
+                {
+                    dot.Run(bw, e);
+                    Thread.Sleep(5);
+                }
+                if (bw.CancellationPending == true)
+                {
+                    e.Cancel = true;
+                    break;
+                }
+                Thread.Sleep(10);
+            }
         }
 
         // 設定個別 Dot 屬性
@@ -210,13 +231,12 @@ namespace auTouch
             }
         }
 
-        private Point Get_Dot_Point(Dot dot)
+        private void Hide_Dots()
         {
-            Point point = dot.PointToScreen(new Point(0, 0));
-            point.X += dot.Width / 2 + 3;
-            point.Y += dot.Height / 2 + 3;
-
-            return point;
+            foreach (Dot dot in dots)
+            {
+                dot.Visibility = Visibility.Collapsed;
+            }
         }
 
         // 對調 Run / Stop 按鈕狀態
@@ -277,6 +297,14 @@ namespace auTouch
         }
 
         private void RB_SelfDefine_Checked(object sender, RoutedEventArgs e)
+        {
+            foreach (Dot dot in dots)
+            {
+                dot.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void Show_Dots()
         {
             foreach (Dot dot in dots)
             {
