@@ -5,13 +5,13 @@ namespace auTouch
 {
     public partial class Dot : Window
     {
-        public DotPorperty dp;
+        public readonly DotPorperty dp = new();
+        MouseSimulator ms = new();
 
         public Dot()
         {
             InitializeComponent();
             this.ShowInTaskbar = false;
-            dp = new();
         }
 
         private void Drag_Window(object sender, MouseButtonEventArgs e)
@@ -21,5 +21,26 @@ namespace auTouch
                 ((Window)sender).DragMove();             
             }
         }
+
+        public void Click_Event()
+        {
+            switch (dp.EventType)
+            {
+                case ClickEventType.Left:
+                    ms.MouseLeftClickEvent();
+                    break;
+                case ClickEventType.Right:
+                    ms.MouseRightClickEvent();
+                    break;
+            }
+        }
     }
+
+    public enum ClickEventType
+    {
+        Left,
+        Right,
+        Middle
+    }
+
 }

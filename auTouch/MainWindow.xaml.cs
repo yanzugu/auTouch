@@ -162,7 +162,7 @@ namespace auTouch
                         e.Cancel = true;
                         break;
                     }
-                    ms.MouseLeftClickEvent();
+                    currentDot.Click_Event();
                     Thread.Sleep(currentDot.dp.Interval);
                 }
             }
@@ -175,7 +175,7 @@ namespace auTouch
                         e.Cancel = true;
                         break;
                     }
-                    ms.MouseLeftClickEvent();
+                    currentDot.Click_Event();
                     Thread.Sleep(currentDot.dp.Interval);
                 }
             }

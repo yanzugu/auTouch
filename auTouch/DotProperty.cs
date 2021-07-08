@@ -4,17 +4,19 @@ namespace auTouch
 {
     public class DotPorperty : INotifyPropertyChanged
     {
+        private string _name;
+        private int _count;
+        private int _min, _sec, _ms;
+        private ClickEventType _eventType;
+
         public DotPorperty()
         {
             _count = 0;
             _min = 0;
             _sec = 1;
             _ms = 0;
+            _eventType = ClickEventType.Left;
         }
-
-        private string _name;
-        private int _count;
-        private int _min, _sec, _ms;
 
         public string Name
         {
@@ -101,6 +103,21 @@ namespace auTouch
                     Ms = 10;
                 }
                 return total;
+            }
+        }
+
+        public int a = 0;
+
+        public ClickEventType EventType
+        {
+            get
+            {
+                return _eventType;
+            }
+            set
+            {
+                _eventType = value;
+                OnPropertyChanged("EventType");
             }
         }
 

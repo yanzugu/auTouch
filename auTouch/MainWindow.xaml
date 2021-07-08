@@ -4,7 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:auTouch"
-        mc:Ignorable="d"    
+        xmlns:src="clr-namespace:auTouch"
+        mc:Ignorable="d"   
         Title="MainWindow" Height="430" Width="300" ResizeMode="CanMinimize">
     <Window.Resources>
         <Style x:Key="Dot_Table_Row" TargetType="DockPanel">
@@ -27,6 +28,8 @@
         <Style TargetType="TextBlock">
             <Setter Property="FontSize" Value="15"/>
         </Style>
+
+        <src:EventTypeConverter x:Key="eventTypeConverter"/>
     </Window.Resources>
 
     <Grid>
@@ -61,6 +64,10 @@
         <StackPanel Grid.Row="1" IsEnabled="{Binding ElementName=Btn_Run, Path=IsEnabled}">
             <DockPanel Style="{StaticResource Dot_Table_Row}">
                 <TextBlock Text="{Binding Path=Name, FallbackValue=未選定目標}"/>
+                <ComboBox x:Name="CBB_ClickEvent" HorizontalAlignment="Right" Width="80" SelectedIndex="{Binding Path=EventType, Converter={StaticResource eventTypeConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <ComboBoxItem Content="左鍵"/>
+                    <ComboBoxItem Content="右鍵"/>
+                </ComboBox>
             </DockPanel>
             <DockPanel Style="{StaticResource Dot_Table_Row}">
                 <TextBlock Margin="0 0 10 0">次數</TextBlock>
