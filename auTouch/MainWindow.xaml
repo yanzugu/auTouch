@@ -54,8 +54,8 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Button x:Name="Btn_Delete" Click="Btn_Delete_Click" Content="刪除" Grid.Column="1" Grid.Row="0" IsEnabled="{Binding ElementName=RB_SelfDefine,Path=IsChecked}"/>
-                    <Button x:Name="Btn_Create" Click="Btn_Create_Click" Content="新增" Grid.Column="0" Grid.Row="0" IsEnabled="{Binding ElementName=RB_SelfDefine,Path=IsChecked}"/>
+                    <Button x:Name="Btn_Delete" Click="Btn_Delete_Click" Content="刪除(-)" Grid.Column="1" Grid.Row="0" IsEnabled="{Binding ElementName=RB_SelfDefine,Path=IsChecked}"/>
+                    <Button x:Name="Btn_Create" Click="Btn_Create_Click" Content="新增(+)" Grid.Column="0" Grid.Row="0" IsEnabled="{Binding ElementName=RB_SelfDefine,Path=IsChecked}"/>
                     <Button x:Name="Btn_Clear" Click="Btn_Clear_Click" Content="清除" Grid.Row="1" Grid.Column="0" IsEnabled="{Binding ElementName=RB_SelfDefine,Path=IsChecked}"/>
                     <Button x:Name="Btn_Hotkey" Click="Btn_Hotkey_Click" Content="快捷鍵" Grid.Row="1" Grid.Column="1"/>
                 </Grid>
