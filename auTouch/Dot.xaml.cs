@@ -34,8 +34,8 @@ namespace auTouch
         private Point Get_Point()
         {
             var p = this.PointToScreen(new Point(0, 0));
-            p.X += this.Width / 2 + 3;
-            p.Y += this.Height / 2 + 3;
+            p.X += this.Width / 2 + 4;
+            p.Y += this.Height / 2 + 4;
             return p;
         }
 

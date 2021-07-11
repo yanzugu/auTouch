@@ -95,6 +95,8 @@ namespace auTouch
         // 設定快捷鍵
         private void Set_Hotkey_Window_KeyDown(object sender, KeyEventArgs e)
         {
+            if (e.Key == Key.Add || e.Key == Key.Subtract)
+                return;
             hotkey = e.Key;
             Window window = sender as Window;
             TextBlock textBlock = window.Content as TextBlock;
@@ -224,7 +226,16 @@ namespace auTouch
             if (currentDot == null) return;
             dots.Remove(currentDot);
             currentDot.Close();
-            this.DataContext = null;
+
+            if (dots.Count == 0)
+            {
+                this.DataContext = null;
+            }
+            else
+            {
+                currentDot = dots[dots.Count - 1];
+                this.DataContext = currentDot.dp;
+            }
         }
 
         private void Drag_Window(object sender, MouseButtonEventArgs e)
@@ -349,7 +360,9 @@ namespace auTouch
             [In] int id);
 
         private HwndSource _source;
-        private const int HOTKEY_ID = 9000;
+        private const int RUN_HOTKEY_ID = 9000;
+        private const int CREATE_HOTKEY_ID = 9001;
+        private const int DELETE_HOTKEY_ID = 9002;
 
         protected override void OnSourceInitialized(EventArgs e)
         {
@@ -371,8 +384,15 @@ namespace auTouch
         private void RegisterHotKey()
         {
             var helper = new WindowInteropHelper(this);
-            //const uint MOD_CTRL = 0x0002;
-            if (!RegisterHotKey(helper.Handle, HOTKEY_ID, 0, VK_Hotkey))
+            if (!RegisterHotKey(helper.Handle, RUN_HOTKEY_ID, 0, VK_Hotkey))
+            {
+                // handle error
+            }
+            if (!RegisterHotKey(helper.Handle, CREATE_HOTKEY_ID, 0, (uint)KeyInterop.VirtualKeyFromKey(Key.Add)))
+            {
+                // handle error
+            }
+            if (!RegisterHotKey(helper.Handle, DELETE_HOTKEY_ID, 0, (uint)KeyInterop.VirtualKeyFromKey(Key.Subtract)))
             {
                 // handle error
             }
@@ -381,7 +401,9 @@ namespace auTouch
         private void UnregisterHotKey()
         {
             var helper = new WindowInteropHelper(this);
-            UnregisterHotKey(helper.Handle, HOTKEY_ID);
+            UnregisterHotKey(helper.Handle, RUN_HOTKEY_ID);
+            UnregisterHotKey(helper.Handle, CREATE_HOTKEY_ID);
+            UnregisterHotKey(helper.Handle, DELETE_HOTKEY_ID);
         }
 
         private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -392,8 +414,21 @@ namespace auTouch
                 case WM_HOTKEY:
                     switch (wParam.ToInt32())
                     {
-                        case HOTKEY_ID:
+                        case RUN_HOTKEY_ID:
                             OnHotKeyPressed();
+                            handled = true;
+                            break;
+                        case CREATE_HOTKEY_ID:
+                            if (RB_SelfDefine.IsChecked == false)
+                                break;
+                            currentDot = Create_Dot();
+                            this.DataContext = currentDot.dp;
+                            handled = true;
+                            break;
+                        case DELETE_HOTKEY_ID:
+                            if (RB_SelfDefine.IsChecked == false)
+                                break;
+                            Delete_Dot();
                             handled = true;
                             break;
                     }
