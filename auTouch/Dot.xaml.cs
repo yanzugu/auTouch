@@ -27,6 +27,7 @@ namespace auTouch
         private void Dot_Loaded(object sender, RoutedEventArgs e)
         {
             point = Get_Point();
+            Index.Text = dp.Name.Split('_').Length == 2 ? dp.Name.Split('_')[1] : "";
         }
 
         // 取得當前位置

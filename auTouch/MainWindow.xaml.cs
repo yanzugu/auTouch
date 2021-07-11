@@ -53,7 +53,8 @@ namespace auTouch
         {
             isRunning = false;
             Inverse_Button_State();
-            Show_Dots();
+            if (RB_SelfDefine.IsChecked == true)
+                Show_Dots();
         }
 
         private void Btn_Delete_Click(object sender, RoutedEventArgs e)
@@ -140,6 +141,7 @@ namespace auTouch
             Dot dot = new();
             dot.Topmost = true;
             dot.Name = "Dot_" + index++;
+            dot.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             dot.MouseLeftButtonDown += Dot_MouseLeftButtonDown;
             dot.dp.Name = dot.Name;
             dots.Add(dot);
@@ -147,6 +149,7 @@ namespace auTouch
             return dot;
         }
 
+        // 清除所有點
         private void Clear_Dots()
         {
             foreach (var dot in dots)
@@ -215,6 +218,7 @@ namespace auTouch
             this.DataContext = currentDot.dp;
         }
 
+        // 刪除選定點
         private void Delete_Dot()
         {
             if (currentDot == null) return;
